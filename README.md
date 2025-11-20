@@ -1,225 +1,194 @@
-# 🏦 Crucible - FIX Exchange with Real-Time Dashboard
+# Crucible - FIX Exchange System
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/sc895/Crucible/actions)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
-[![Test Framework](https://img.shields.io/badge/testing-Behave%20BDD-orange)](https://behave.readthedocs.io/)
-[![Protocol](https://img.shields.io/badge/protocol-FIX%204.2-red)](https://www.fixtrading.org/)
-[![Real-Time](https://img.shields.io/badge/real--time-WebSocket-purple)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
-[![GitHub Pages](https://img.shields.io/badge/demo-live-success)](https://sc895.github.io/Crucible/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## 📋 Project Overview
-This project is a comprehensive **FIX Exchange with Real-Time WebSocket Dashboard** designed to showcase financial technology expertise.
+## Overview
 
-Built to demonstrate the responsibilities of an **SDET in High-Frequency Trading**, this system uses the **FIX (Financial Information eXchange)** protocol for order routing, features a **live WebSocket-enabled dashboard**, and includes a complete **BDD test automation framework**.
+A FIX 4.2 protocol exchange server with real-time WebSocket capabilities and comprehensive test automation framework. This system implements order matching, execution reporting, and session management for electronic trading.
 
-### 🎯 Key Features
-* **Real-Time Trading Dashboard:** Live order book with WebSocket streaming (see `dashboard_realtime.html`)
-* **FIX Protocol Implementation:** Full FIX 4.2 message handling with order matching engine
-* **Test Automation:** BDD framework with 21 Gherkin scenarios using Python Behave
-* **Order Generator:** Automated sample data generation for live demonstrations
-* **CI/CD Integration:** Fully automated regression pipeline via GitHub Actions
-* **Cross-Platform Support:** Works on Linux, macOS, and Windows (WSL)
+## Features
 
-### 🌟 Live Demo
-Visit the **[Live Dashboard](https://sc895.github.io/Crucible/)** to see the real-time order book in action!
+- **FIX Protocol Implementation**: Complete FIX 4.2 message handling
+- **Real-Time Dashboard**: WebSocket-enabled order book with live updates
+- **Order Matching Engine**: Price-time priority matching algorithm
+- **Test Automation**: BDD framework with 21 Gherkin scenarios using Behave
+- **CI/CD Pipeline**: Automated testing via GitHub Actions
+- **Cross-Platform**: Supports Linux, macOS, and Windows
 
----
+## Architecture
 
-## 🏗️ Architecture
-
-The system consists of three distinct components interacting in real-time:
-
-```mermaid
-graph LR
-    A[Test Client / SDET Framework] -- TCP/IP (FIX) --> B[Mock Exchange Server]
-    B -- Execution Reports --> A
-    C[Linux Environment Wrapper] -. Controls .-> B
-    C -. Triggers .-> A
+```
+┌─────────────────┐         FIX 4.2 Protocol        ┌──────────────────┐
+│  Test Client    │ ◄─────────────────────────────► │ Exchange Server  │
+│  (BDD/Behave)   │      TCP/IP Connection          │   (Order Book)   │
+└─────────────────┘                                  └──────────────────┘
+         │                                                     │
+         │                                                     │
+         ▼                                                     ▼
+┌─────────────────┐                                  ┌──────────────────┐
+│ Test Scenarios  │                                  │  WebSocket API   │
+│ (21 Gherkin)    │                                  │  (Real-time)     │
+└─────────────────┘                                  └──────────────────┘
+                                                               │
+                                                               ▼
+                                                     ┌──────────────────┐
+                                                     │   Web Dashboard  │
+                                                     └──────────────────┘
 ```
 
-1.  **The Mock Exchange (SUT):** A Python socket server that parses raw FIX messages, maintains an order book, and sends execution reports.
-2.  **The Conformance Suite:** A BDD-based client that acts as a Trader, injecting specific scenarios (Happy Path, Edge Cases, Latency checks).
-3.  **The DevOps Layer:** Shell scripts and CI pipelines that ensure clean environments for every test run.
+## Technology Stack
 
----
+- **Language**: Python 3.9+
+- **Protocol**: FIX 4.2
+- **Testing**: Behave (BDD), pytest
+- **Real-time**: WebSocket, asyncio
+- **CI/CD**: GitHub Actions
+- **OS**: Linux, macOS, Windows
 
-## 🚀 Features & Scenarios
+## Project Structure
 
-This framework covers the following conformance scenarios required for exchange certification:
-
-### 1\. Connectivity & Session Layer
-
-  * **Logon (35=A):** Validates `SenderCompID` and `TargetCompID`.
-  * **Heartbeats (35=0):** Ensures session remains active during idle periods.
-  * **Logout (35=5):** Graceful session termination.
-
-### 2\. Order Management (Trade Life Cycle)
-
-  * **New Order Single (35=D):** Submission of Limit and Market orders.
-  * **Execution Reports (35=8):** Verifies `ExecType` (Fill, Partial Fill, New).
-  * **Order Cancellation (35=F):** Ability to withdraw open orders.
-
-### 3\. Risk & Validation (Negative Testing)
-
-  * **Price Validation:** Rejects orders with Negative or Zero price.
-  * **Symbol Check:** Rejects orders for symbols not in the master security list.
-  * **Protocol Compliance:** Rejects malformed FIX strings (missing checksums or delimiters).
-
----
-
-## 🛠️ Technology Stack
-
-| Component | Technology Used | Relevance to Tower Research |
-| :--- | :--- | :--- |
-| **Language** | Python 3.9 | Core JD Requirement |
-| **Protocol** | FIX 4.2 (via `simplefix`) | Financial Services Standard |
-| **Framework** | Behave (Gherkin) | "Experience with BDD/TDD" |
-| **OS Tools** | Linux Bash, `netstat`, `nohup` | "Competence using Linux" |
-| **CI/CD** | GitHub Actions | "Familiarity with DevOps tools" |
-| **Reporting** | Allure Reports | "Design test artifacts... Reporting" |
-
----
-
-## 📂 Project Structure
-
-```text
-├── features/               # BDD Feature Files (Gherkin)
-│   ├── environment.py      # Hooks for setup/teardown
-│   ├── trading.feature     # Business scenarios
-│   └── steps/              # Python step definitions
+```
+├── features/               # BDD test scenarios
+│   ├── environment.py      # Test hooks
+│   ├── trading.feature     # Gherkin scenarios
+│   └── steps/              # Step definitions
 ├── src/
-│   ├── exchange_server.py  # FIX Engine with WebSocket support
-│   └── fix_engine.py       # FIX protocol message construction
+│   ├── exchange_server.py  # FIX server with WebSocket
+│   └── fix_engine.py       # FIX protocol utilities
 ├── scripts/
-│   ├── run_suite.sh        # Linux automation script
-│   └── run_suite.bat       # Windows automation script
-├── .github/workflows/      # CI/CD Pipeline configuration
-├── dashboard_realtime.html # Real-time WebSocket dashboard
-├── generate_orders.py      # Sample order generator
-├── requirements.txt        # Python dependencies
-└── README.md               # Documentation
+│   ├── run_suite.sh        # Linux test runner
+│   └── run_suite.bat       # Windows test runner
+├── .github/workflows/      # CI/CD pipelines
+├── dashboard_realtime.html # Real-time dashboard
+├── generate_orders.py      # Order generator
+└── requirements.txt        # Dependencies
 ```
 
----
-
-## ⚡ Quick Start
-
-### Prerequisites
-
-  * Python 3.9+
-  * Git
-
-### Installation
+## Installation
 
 ```bash
-git clone https://github.com/sc895/Crucible.git
+git clone https://github.com/Demiserular/Crucible.git
 cd Crucible
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Running the Real-Time Demo
+## Usage
 
-**Terminal 1 - Start Exchange Server:**
+### Start Exchange Server
+
 ```bash
 python src/exchange_server.py
 ```
 
-**Terminal 2 - Generate Sample Orders:**
+The server will start on:
+- FIX Protocol: `tcp://127.0.0.1:9878`
+- WebSocket: `ws://127.0.0.1:8765`
+
+### Generate Sample Orders
+
 ```bash
 python generate_orders.py
 ```
 
-**Terminal 3 - Open Dashboard:**
+### View Dashboard
+
+Open `dashboard_realtime.html` in your browser to see the live order book.
+
+### Run Tests
+
+**Automated:**
 ```bash
-# Simply open dashboard_realtime.html in your browser
-# Or use: start dashboard_realtime.html (Windows)
+./scripts/run_suite.sh  # Linux/macOS
+scripts\run_suite.bat   # Windows
 ```
 
-### Running Tests
-
-**Automated Way (Recommended):**
-This script kills stale processes, boots the server in the background, runs tests, and aggregates logs.
-
-```bash
-chmod +x scripts/run_suite.sh
-./scripts/run_suite.sh
-```
-
-**2. The "Manual" Way (For Debugging)**
-Terminal 1 (Server):
-
-```bash
-python src/exchange_server.py
-```
-
-Terminal 2 (Test Runner):
-
+**Manual:**
 ```bash
 behave features/
 ```
 
-**3. Generating Visual Reports**
-To view the Allure test dashboard:
+## FIX Protocol Support
 
+### Supported Messages
+
+- **Logon (35=A)**: Session establishment
+- **Heartbeat (35=0)**: Keep-alive
+- **Logout (35=5)**: Session termination
+- **New Order Single (35=D)**: Order submission
+- **Execution Report (35=8)**: Fill notifications
+- **Order Cancel Request (35=F)**: Order cancellation
+
+### Validation Rules
+
+- Symbol validation (AAPL, GOOGL, MSFT, AMZN, TSLA)
+- Price validation (positive, non-zero)
+- Quantity validation (positive, non-zero)
+- Checksum verification
+- Message structure validation
+
+## Testing
+
+The test suite includes 21 scenarios covering:
+
+- Session management
+- Order lifecycle (submit, fill, cancel)
+- Risk validation
+- Protocol compliance
+- Edge cases and error handling
+
+Run tests with coverage:
 ```bash
-behave -f allure_behave.formatter:AllureFormatter -o report_results features/
-allure serve report_results
+pytest --cov=src tests/
 ```
 
----
+## Development
 
-## 🎨 Trading Dashboard
+### Prerequisites
 
-Access the **interactive web dashboard** for real-time monitoring:
+- Python 3.9 or higher
+- pip
+
+### Setup Development Environment
 
 ```bash
-# Option 1: Direct file open
-# Double-click dashboard.html
-
-# Option 2: With Python server
-python -m http.server 8000
-# Open: http://localhost:8000/dashboard.html
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-**Dashboard Features:**
-- 📊 Real-time statistics and performance metrics
-- 📈 Live market data for 10 major stocks
-- 📝 Recent order activity with status tracking
-- 🎮 Interactive controls to generate orders
-- 🖥️ Console logs for monitoring server activity
+### Code Quality
 
-**Sample Data Generator:**
 ```bash
-python sample_data_generator.py
+# Linting
+pylint src/
+flake8 src/
+
+# Type checking
+mypy src/
 ```
 
-See [DASHBOARD_README.md](DASHBOARD_README.md) for detailed UI documentation.
+## CI/CD
 
----
+GitHub Actions workflows automatically:
+- Run tests on push/PR
+- Check code quality
+- Generate test reports
 
-## 🔄 CI/CD Pipeline
+## License
 
-This repository uses **GitHub Actions** to ensure quality gates.
+MIT License - see LICENSE file for details
 
-  * **Trigger:** Push to `main` or Pull Request.
-  * **Job:**
-    1.  Provisions an Ubuntu container.
-    2.  Installs dependencies.
-    3.  Boots the `exchange_server.py` as a background service.
-    4.  Executes the `behave` suite.
-    5.  Archives server logs as artifacts for debugging.
+## Author
 
----
+**Shubham Chauhan**
 
-## 🔮 Future Roadmap (Tower Research Alignment)
+## Contributing
 
-  * **C++ Port:** Rewrite the matching engine in C++ to demonstrate low-latency coding.
-  * **Database:** Integrate MongoDB to persist trade history (Audit Trail).
-  * **Load Testing:** Add a scenario to flood the exchange with 10k orders/sec to test throughput.
+Contributions are welcome. Please open an issue or submit a pull request.
 
----
+## Acknowledgments
 
-**Author:** [Your Name]
-*Aspiring SDET | Python | Linux | Financial Technologies*
+Built with Python, asyncio, and the FIX Protocol specification.
