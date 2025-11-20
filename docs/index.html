@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Crucible - Real-Time FIX Exchange with WebSocket Dashboard">
+    <title>Crucible - FIX Exchange System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .demo-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .tech-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: block;
+        }
+
+        .code-section {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .code-section pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+
+        .link-button {
+            background: white;
+            color: #667eea;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .link-button:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🏦 Crucible</h1>
+            <div class="subtitle">Real-Time FIX Exchange with WebSocket Dashboard</div>
+            <div class="badges">
+                <span class="badge">🐍 Python 3.9+</span>
+                <span class="badge">📡 FIX 4.2 Protocol</span>
+                <span class="badge">🔴 WebSocket Real-Time</span>
+                <span class="badge">🧪 BDD Testing</span>
+                <span class="badge">⚡ Live Order Book</span>
+            </div>
+        </header>
+
+        <div class="hero">
+            <div class="demo-section">
+                <h2>🚀 Live Trading Dashboard</h2>
+                <p style="margin: 20px 0; font-size: 1.1em;">Experience real-time order book updates via WebSocket</p>
+                <a href="../dashboard_realtime.html" class="demo-button">Launch Live Demo →</a>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h3>📊 Real-Time Dashboard</h3>
+                    <p>Live WebSocket-powered order book showing buy/sell orders, executions, and trading statistics
+                        with smooth animations.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔧 FIX Protocol Engine</h3>
+                    <p>Complete FIX 4.2 implementation with order matching, execution reports, and session management.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🧪 BDD Test Framework</h3>
+                    <p>21 Gherkin scenarios covering session management, order lifecycle, and negative testing.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🤖 Order Generator</h3>
+                    <p>Automated sample data generation for demonstrations and testing with realistic market prices.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔄 CI/CD Pipeline</h3>
+                    <p>GitHub Actions workflow with automated testing, cross-platform support, and deployment.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📱 Cross-Platform</h3>
+                    <p>Works seamlessly on Linux, macOS, and Windows with shell and batch scripts.</p>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; margin: 60px 0 30px;">🛠️ Technology Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-item">Python</span>
+                <span class="tech-item">WebSocket</span>
+                <span class="tech-item">FIX Protocol</span>
+                <span class="tech-item">Behave BDD</span>
+                <span class="tech-item">asyncio</span>
+                <span class="tech-item">GitHub Actions</span>
+                <span class="tech-item">HTML/CSS/JS</span>
+            </div>
+
+            <h2 style="text-align: center; margin: 60px 0 30px;">⚡ Quick Start</h2>
+            <div class="code-section">
+                <pre># Clone the repository
+git clone https://github.com/sc895/Crucible.git
+cd Crucible
+
+# Set up virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Terminal 1: Start exchange server
+python src/exchange_server.py
+
+# Terminal 2: Generate sample orders
+python generate_orders.py
+
+# Terminal 3: Open dashboard
+start dashboard_realtime.html  # Opens in browser</pre>
+            </div>
+
+            <h2 style="text-align: center; margin: 60px 0 30px;">🎯 Key Features</h2>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Real-Time Order Book</h3>
+                <ul style="margin-left: 30px; line-height: 2;">
+                    <li>Live buy/sell order display with price-time priority</li>
+                    <li>WebSocket streaming for instant updates</li>
+                    <li>Smooth animations for new orders and executions</li>
+                    <li>Multi-symbol support (AAPL, GOOGL, MSFT, AMZN, TSLA)</li>
+                    <li>Trading statistics with volume and match rates</li>
+                </ul>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">FIX Protocol Implementation</h3>
+                <ul style="margin-left: 30px; line-height: 2;">
+                    <li>Complete FIX 4.2 message construction and parsing</li>
+                    <li>Order matching engine with price-time priority</li>
+                    <li>Session management (Logon, Logout, Heartbeat)</li>
+                    <li>Execution reports for fills and partial fills</li>
+                    <li>Order cancellation support</li>
+                    <li>Risk validation (price, quantity, symbol checks)</li>
+                </ul>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Test Automation</h3>
+                <ul style="margin-left: 30px; line-height: 2;">
+                    <li>21 comprehensive Gherkin scenarios</li>
+                    <li>BDD framework using Python Behave</li>
+                    <li>Automated server lifecycle management</li>
+                    <li>Cross-platform test scripts (bash + batch)</li>
+                    <li>CI/CD integration with GitHub Actions</li>
+                </ul>
+            </div>
+
+            <div class="links">
+                <a href="https://github.com/sc895/Crucible" class="link-button">📂 GitHub Repository</a>
+                <a href="https://github.com/sc895/Crucible/blob/master/REALTIME_QUICKSTART.md" class="link-button">📖
+                    Documentation</a>
+                <a href="../dashboard_realtime.html" class="link-button">🚀 Live Demo</a>
+            </div>
+
+            <div style="background: #f0f4ff; padding: 30px; border-radius: 15px; margin: 40px 0;">
+                <h3 style="color: #667eea; text-align: center; margin-bottom: 20px;">📸 Dashboard Preview</h3>
+                <p style="text-align: center; color: #666;">Real-time order book with live executions and trading
+                    statistics</p>
+                <div style="margin-top: 20px; text-align: center;">
+                    <a href="../dashboard_realtime.html"
+                        style="color: #667eea; font-weight: bold; text-decoration: none;">
+                        → Click to view live dashboard
+                    </a>
+                </div>
+            </div>
+
+            <div
+                style="margin: 50px 0; padding: 30px; background: #fff7ed; border-left: 5px solid #f59e0b; border-radius: 10px;">
+                <h3 style="color: #f59e0b; margin-bottom: 15px;">🎓 Built For</h3>
+                <p style="line-height: 1.8;">
+                    This project demonstrates expertise in financial technology, real-time systems,
+                    test automation, and full-stack development. Created as a portfolio project for
+                    <strong>SDET roles in High-Frequency Trading</strong>, showcasing:
+                </p>
+                <ul style="margin-left: 30px; margin-top: 15px; line-height: 2;">
+                    <li>Financial protocol implementation (FIX 4.2)</li>
+                    <li>Real-time streaming architecture (WebSocket)</li>
+                    <li>Test automation frameworks (BDD/Behave)</li>
+                    <li>DevOps practices (CI/CD, containerization-ready)</li>
+                    <li>Full-stack development (Python + Web)</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.1em; margin-bottom: 10px;">Built with 💜 by <strong>sc895</strong></p>
+            <p>Portfolio Project for Tower Research Capital | SDET Role</p>
+            <p style="margin-top: 20px; opacity: 0.8;">
+                <a href="https://github.com/sc895/Crucible"
+                    style="color: white; text-decoration: none; border-bottom: 1px solid white;">
+                    View on GitHub
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+
+</html>
