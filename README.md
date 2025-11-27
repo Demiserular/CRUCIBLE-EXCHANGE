@@ -1,194 +1,224 @@
-# Crucible - FIX Exchange System
+# Crucible Exchange
 
-[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+A FIX 4.2 protocol-based financial exchange simulator with comprehensive BDD testing framework. Built to demonstrate software testing expertise, test automation, and CI/CD practices.
 
 ## Overview
 
-A FIX 4.2 protocol exchange server with real-time WebSocket capabilities and comprehensive test automation framework. This system implements order matching, execution reporting, and session management for electronic trading.
+Crucible is a real-time exchange system that processes orders using the FIX (Financial Information eXchange) protocol. The project includes a complete BDD testing framework, automated CI/CD pipeline, and professional test reporting capabilities.
 
-## Features
+**Key Components:**
+- FIX 4.2 protocol server for order processing
+- Real-time WebSocket dashboard for live market data
+- REST API for order management
+- SQLite database for persistence
+- Optional C++ matching engine for high performance
+- Comprehensive BDD test suite with Behave
 
-- **FIX Protocol Implementation**: Complete FIX 4.2 message handling
-- **Real-Time Dashboard**: WebSocket-enabled order book with live updates
-- **Order Matching Engine**: Price-time priority matching algorithm
-- **Test Automation**: BDD framework with 21 Gherkin scenarios using Behave
-- **CI/CD Pipeline**: Automated testing via GitHub Actions
-- **Cross-Platform**: Supports Linux, macOS, and Windows
+## Quick Start
 
-## Architecture
+### Prerequisites
+- Python 3.12 or higher
+- Git
 
+### Installation
+
+```bash
+git clone https://github.com/Demiserular/CRUCIBLE-EXCHANGE.git
+cd CRUCIBLE-EXCHANGE
+
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
 ```
-┌─────────────────┐         FIX 4.2 Protocol        ┌──────────────────┐
-│  Test Client    │ ◄─────────────────────────────► │ Exchange Server  │
-│  (BDD/Behave)   │      TCP/IP Connection          │   (Order Book)   │
-└─────────────────┘                                  └──────────────────┘
-         │                                                     │
-         │                                                     │
-         ▼                                                     ▼
-┌─────────────────┐                                  ┌──────────────────┐
-│ Test Scenarios  │                                  │  WebSocket API   │
-│ (21 Gherkin)    │                                  │  (Real-time)     │
-└─────────────────┘                                  └──────────────────┘
-                                                               │
-                                                               ▼
-                                                     ┌──────────────────┐
-                                                     │   Web Dashboard  │
-                                                     └──────────────────┘
+
+### Running the Application
+
+**Windows:**
+```bash
+.\start_all.bat
 ```
 
-## Technology Stack
+**Linux/Mac:**
+```bash
+chmod +x start_all.sh
+./start_all.sh
+```
 
-- **Language**: Python 3.9+
-- **Protocol**: FIX 4.2
-- **Testing**: Behave (BDD), pytest
-- **Real-time**: WebSocket, asyncio
-- **CI/CD**: GitHub Actions
-- **OS**: Linux, macOS, Windows
+Open `dashboard_minimal.html` in your browser to access the trading dashboard.
+
+**Server Endpoints:**
+- Exchange Server (FIX): 127.0.0.1:9878
+- WebSocket: ws://127.0.0.1:8765
+- REST API: http://127.0.0.1:5000
+
+## Testing
+
+### Running BDD Tests
+
+```bash
+# Run all tests
+behave
+
+# Run specific feature
+behave features/order_matching.feature
+
+# Generate Allure report
+behave -f allure_behave.formatter:AllureFormatter -o allure-results
+```
+
+### Test Scenarios
+
+The test suite includes five comprehensive scenarios:
+
+1. **Place a buy order** - Validates basic order placement via FIX protocol
+2. **Match buy and sell orders** - Tests the order matching engine
+3. **Reject invalid symbol** - Verifies input validation
+4. **Cancel an order** - Tests order cancellation workflow
+5. **Execute market order** - Validates market order execution
+
+### Test Coverage
+
+- FIX protocol message construction and parsing
+- Order placement and validation logic
+- Order matching engine functionality
+- Order cancellation flow
+- Market vs. limit order handling
+- Database persistence
+
+## Test Reporting
+
+Generate professional test reports using Allure:
+
+**Windows:**
+```bash
+scripts\generate_report.bat
+```
+
+**Linux/Mac:**
+```bash
+./scripts/generate_report.sh
+```
+
+Reports include test execution history, step-by-step breakdowns, failure analysis, and trend tracking.
+
+## CI/CD Pipeline
+
+The project includes a GitHub Actions workflow that automatically:
+- Runs BDD tests on every push and pull request
+- Executes code quality checks (pylint, flake8)
+- Generates Allure test reports
+- Deploys reports to GitHub Pages
+
+View the workflow configuration in `.github/workflows/test.yml`
 
 ## Project Structure
 
 ```
-├── features/               # BDD test scenarios
-│   ├── environment.py      # Test hooks
-│   ├── trading.feature     # Gherkin scenarios
-│   └── steps/              # Step definitions
-├── src/
-│   ├── exchange_server.py  # FIX server with WebSocket
-│   └── fix_engine.py       # FIX protocol utilities
-├── scripts/
-│   ├── run_suite.sh        # Linux test runner
-│   └── run_suite.bat       # Windows test runner
-├── .github/workflows/      # CI/CD pipelines
-├── dashboard_realtime.html # Real-time dashboard
-├── generate_orders.py      # Order generator
-└── requirements.txt        # Dependencies
+Crucible/
+├── .github/workflows/     # CI/CD pipeline configuration
+├── features/              # BDD test scenarios and step definitions
+│   ├── environment.py     # Test environment setup
+│   ├── order_matching.feature
+│   └── steps/
+├── src/                   # Application source code
+│   ├── exchange_server.py # FIX protocol server
+│   ├── api_server.py      # REST API server
+│   ├── fix_engine.py      # FIX message handling
+│   ├── database_sqlite.py # Database layer
+│   └── matching_engine.cpp # Optional C++ matching engine
+├── scripts/               # Utility scripts
+├── tests/                 # Test documentation
+├── dashboard_minimal.html # Web-based trading dashboard
+└── requirements.txt       # Python dependencies
 ```
 
-## Installation
+## Technology Stack
 
+**Application:**
+- Python 3.12
+- FIX 4.2 Protocol
+- WebSocket for real-time updates
+- Flask for REST API
+- SQLite for data persistence
+- C++ for optional high-performance matching
+
+**Testing & Quality:**
+- Behave (BDD framework)
+- Allure (test reporting)
+- Pytest (unit testing)
+- Pylint, Flake8, MyPy (static analysis)
+
+**DevOps:**
+- GitHub Actions (CI/CD)
+- Git (version control)
+
+## Documentation
+
+- [Testing Guide](tests/README.md) - Comprehensive guide for running and writing tests
+- [API Documentation](docs/README.md) - REST API reference
+- [FIX Protocol Guide](docs/FIX_PROTOCOL.md) - FIX message specifications
+
+## Troubleshooting
+
+**Tests hang or timeout:**
 ```bash
-git clone https://github.com/Demiserular/Crucible.git
-cd Crucible
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Ensure servers are running
+.\start_all.bat
+
+# Check if ports are available
+netstat -ano | findstr :9878
+```
+
+**Connection refused errors:**
+```bash
+# Start servers and wait for initialization
+.\start_all.bat
+timeout 5  # Wait 5 seconds
+```
+
+**Import errors:**
+```bash
+# Reinstall dependencies
 pip install -r requirements.txt
 ```
-
-## Usage
-
-### Start Exchange Server
-
-```bash
-python src/exchange_server.py
-```
-
-The server will start on:
-- FIX Protocol: `tcp://127.0.0.1:9878`
-- WebSocket: `ws://127.0.0.1:8765`
-
-### Generate Sample Orders
-
-```bash
-python generate_orders.py
-```
-
-### View Dashboard
-
-Open `dashboard_realtime.html` in your browser to see the live order book.
-
-### Run Tests
-
-**Automated:**
-```bash
-./scripts/run_suite.sh  # Linux/macOS
-scripts\run_suite.bat   # Windows
-```
-
-**Manual:**
-```bash
-behave features/
-```
-
-## FIX Protocol Support
-
-### Supported Messages
-
-- **Logon (35=A)**: Session establishment
-- **Heartbeat (35=0)**: Keep-alive
-- **Logout (35=5)**: Session termination
-- **New Order Single (35=D)**: Order submission
-- **Execution Report (35=8)**: Fill notifications
-- **Order Cancel Request (35=F)**: Order cancellation
-
-### Validation Rules
-
-- Symbol validation (AAPL, GOOGL, MSFT, AMZN, TSLA)
-- Price validation (positive, non-zero)
-- Quantity validation (positive, non-zero)
-- Checksum verification
-- Message structure validation
-
-## Testing
-
-The test suite includes 21 scenarios covering:
-
-- Session management
-- Order lifecycle (submit, fill, cancel)
-- Risk validation
-- Protocol compliance
-- Edge cases and error handling
-
-Run tests with coverage:
-```bash
-pytest --cov=src tests/
-```
-
-## Development
-
-### Prerequisites
-
-- Python 3.9 or higher
-- pip
-
-### Setup Development Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Code Quality
-
-```bash
-# Linting
-pylint src/
-flake8 src/
-
-# Type checking
-mypy src/
-```
-
-## CI/CD
-
-GitHub Actions workflows automatically:
-- Run tests on push/PR
-- Check code quality
-- Generate test reports
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Author
-
-**Shubham Chauhan**
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or submit a pull request.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/YourFeature`)
+3. Run tests to ensure everything works (`behave`)
+4. Commit your changes (`git commit -m 'Add YourFeature'`)
+5. Push to your branch (`git push origin feature/YourFeature`)
+6. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Demiserular**
+- GitHub: [@Demiserular](https://github.com/Demiserular)
+
+## Skills Demonstrated
+
+This project demonstrates proficiency in:
+- Behavior-Driven Development (BDD) with Python
+- Test automation framework development
+- CI/CD pipeline configuration
+- Protocol-level testing (FIX 4.2)
+- End-to-end system testing
+- Database integration testing
+- Multi-threaded application testing
+- Technical documentation
+- DevOps practices
 
 ## Acknowledgments
 
-Built with Python, asyncio, and the FIX Protocol specification.
+Built as a portfolio project to demonstrate SDET (Software Development Engineer in Test) capabilities including test automation, BDD methodologies, and CI/CD practices.
