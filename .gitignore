@@ -57,3 +57,6 @@ nohup.out
 
 # OS
 Thumbs.db
+
+# Documentation
+docs/
