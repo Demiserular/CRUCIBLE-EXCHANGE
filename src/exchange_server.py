@@ -15,6 +15,7 @@ import time
 import json
 import asyncio
 import os
+import queue
 from typing import Dict, List, Optional, Tuple, Set
 from datetime import datetime
 from dataclasses import dataclass, field
@@ -148,6 +149,11 @@ class OrderBook:
         self.lock = threading.Lock()
         self.executions: List[Dict] = []
         self.db_manager = db_manager
+
+        # Database queue for asynchronous writes
+        self.db_queue = queue.Queue()
+        self.db_worker_thread = threading.Thread(target=self._process_db_queue, daemon=True)
+        self.db_worker_thread.start()
         
         # Initialize C++ engine if available
         if CPP_ENGINE_AVAILABLE:
@@ -157,6 +163,29 @@ class OrderBook:
             self.cpp_engine = None
             logger.info("Using Python matching engine")
     
+    def _process_db_queue(self):
+        """Worker thread to process database write operations."""
+        while self._running:
+            try:
+                order_data = self.db_queue.get(timeout=1) # Timeout to check self._running
+                if order_data is None: # Sentinel for shutdown
+                    break
+                if self.db_manager:
+                    self.db_manager.save_order(order_data)
+                    logger.debug(f"Saved order to DB: {order_data['order_id']}")
+                self.db_queue.task_done()
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.error(f"Error saving order to database from queue: {e}")
+
+    def stop(self):
+        """Stops the OrderBook's background threads."""
+        self._running = False
+        self.db_queue.put(None) # Sentinel to unblock the queue worker
+        self.db_worker_thread.join()
+        logger.info("OrderBook database worker thread stopped.")
+
     def generate_order_id(self) -> str:
         """Generate unique order ID."""
         with self.lock:
@@ -210,12 +239,9 @@ class OrderBook:
         with self.lock:
             self.orders[order.order_id] = order
             
-            # Save to database (use raw codes, not display format)
+            # Enqueue order for asynchronous database save
             if self.db_manager:
-                try:
-                    self.db_manager.save_order(order.to_dict(for_display=False))
-                except Exception as e:
-                    logger.error(f"Failed to save order to database: {e}")
+                self.db_queue.put(order.to_dict(for_display=False))
             
             # Add to appropriate side
             if order.side == "1":  # Buy
@@ -448,6 +474,7 @@ class ExchangeServer:
         self.running = False
         if self.server_socket:
             self.server_socket.close()
+        self.order_book.stop() # Stop the order book's background threads
         logger.info("Exchange Server stopped")
     
     def handle_client(self, client_socket: socket.socket, address: Tuple[str, int]):
